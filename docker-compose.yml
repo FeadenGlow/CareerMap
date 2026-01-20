@@ -16,6 +16,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - career-network
+
+networks:
+  career-network:
+    driver: bridge
 
 volumes:
   postgres_data:

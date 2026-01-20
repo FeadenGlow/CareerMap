@@ -1,0 +1,107 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'server/**'
+      - '.github/workflows/backend.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'server/**'
+      - '.github/workflows/backend.yml'
+
+jobs:
+  test:
+    name: Test & Lint
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: career_user
+          POSTGRES_PASSWORD: career_password
+          POSTGRES_DB: career_paths
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma Client
+        working-directory: ./server
+        run: npm run prisma:generate
+        env:
+          DATABASE_URL: postgresql://career_user:career_password@localhost:5432/career_paths?schema=public
+
+      - name: Run database migrations
+        working-directory: ./server
+        run: npm run prisma:migrate:deploy || npm run prisma:migrate deploy
+        env:
+          DATABASE_URL: postgresql://career_user:career_password@localhost:5432/career_paths?schema=public
+        continue-on-error: false
+
+      - name: Lint code
+        working-directory: ./server
+        run: npm run lint:check || npm run lint
+
+      - name: Run tests
+        working-directory: ./server
+        run: npm run test:ci || npm run test
+        env:
+          DATABASE_URL: postgresql://career_user:career_password@localhost:5432/career_paths?schema=public
+          JWT_SECRET: test-secret-key
+          JWT_EXPIRES_IN: 7d
+          PORT: 3000
+        continue-on-error: false
+
+      - name: Build application
+        working-directory: ./server
+        run: npm run build
+        env:
+          DATABASE_URL: postgresql://career_user:career_password@localhost:5432/career_paths?schema=public
+        continue-on-error: false
+
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (test)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: false
+          tags: career-paths-backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+        continue-on-error: false
+

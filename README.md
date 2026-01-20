@@ -391,6 +391,64 @@ UNLICENSED
 
 ---
 
+## CI/CD
+
+The project includes GitHub Actions workflows for automated testing and deployment:
+
+### Backend Workflow (`.github/workflows/backend.yml`)
+- Runs on push/PR to `main` and `develop` branches
+- Tests with PostgreSQL service
+- Runs linting and tests
+- Builds Docker image on main branch push
+
+### Frontend Workflow (`.github/workflows/frontend.yml`)
+- Runs on push/PR to `main` and `develop` branches
+- Runs linting and type checking
+- Builds production bundle
+- Runs Lighthouse CI for performance checks
+
+## Docker Deployment
+
+### Development
+```bash
+docker-compose up -d
+```
+
+### Production
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Build Images Manually
+
+**Backend:**
+```bash
+cd server
+docker build -t career-paths-backend .
+```
+
+**Frontend:**
+```bash
+cd client
+docker build -t career-paths-frontend .
+```
+
+## Performance Optimizations
+
+### Backend
+- Multi-stage Docker builds for smaller images
+- Production dependencies only in final image
+- Non-root user for security
+- Health checks configured
+- Prisma Client generation optimized
+
+### Frontend
+- Code splitting with manual chunks
+- Gzip compression in Nginx
+- Static asset caching (1 year)
+- React Router support in Nginx
+- Production build optimizations
+
 ## Contributing
 
 This is a thesis project. For questions or issues, please contact the project maintainer.
