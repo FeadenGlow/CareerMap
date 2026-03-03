@@ -1,9 +1,6 @@
 import type { Position } from '@entities/position/types';
 import type { InterestType, GrowthType } from '@features/onboarding/types';
-import {
-  INTEREST_TYPES,
-  GROWTH_TYPES,
-} from '@features/onboarding/types';
+import { INTEREST_TYPES, GROWTH_TYPES } from '@features/onboarding/types';
 import { LoadingSpinner } from '@shared/ui/LoadingSpinner';
 import { ErrorMessage } from '@shared/ui/ErrorMessage';
 

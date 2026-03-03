@@ -12,7 +12,7 @@ interface UseDebouncedSkillLevelUpdateParams {
 }
 
 export function useDebouncedSkillLevelUpdate({
-  profile,
+  profile: _profile,
   setProfile,
   loadProfile,
   debounceMs = 400,

@@ -11,10 +11,7 @@ export const userApi = {
     apiClient.get('/users/profile/skills'),
   putSkills: (body: PutSkillsBody): Promise<UserSkillWithLevel[]> =>
     apiClient.put('/users/profile/skills', body),
-  addSkill: (
-    skillId: string,
-    level?: number,
-  ): Promise<UserSkillWithLevel[]> =>
+  addSkill: (skillId: string, level?: number): Promise<UserSkillWithLevel[]> =>
     apiClient.post('/users/profile/skills', { skillId, level }),
   updateSkillLevel: (
     skillId: string,

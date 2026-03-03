@@ -1,8 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import prisma from '../../config/prisma';
-import {
-  SKILL_SUFFICIENT_LEVEL,
-} from '../../config/development.constants';
+import { SKILL_SUFFICIENT_LEVEL } from '../../config/development.constants';
 
 export type SkillGapStatus = 'missing' | 'partial' | 'ok';
 
@@ -75,7 +73,10 @@ export class DevelopmentService {
     };
   }
 
-  async setGoal(userId: string, targetPositionId: string): Promise<DevelopmentGoalDto> {
+  async setGoal(
+    userId: string,
+    targetPositionId: string,
+  ): Promise<DevelopmentGoalDto> {
     const position = await prisma.position.findUnique({
       where: { id: targetPositionId },
     });
@@ -271,7 +272,10 @@ export class DevelopmentService {
       byFrom.set(t.fromPositionId, list);
     }
 
-    const parent = new Map<string, { fromPositionId: string; transition: TransitionWithSkills }>();
+    const parent = new Map<
+      string,
+      { fromPositionId: string; transition: TransitionWithSkills }
+    >();
     const queue: string[] = [fromPositionId];
     const visited = new Set<string>([fromPositionId]);
 

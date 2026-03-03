@@ -26,11 +26,7 @@ export function OnboardingStepNav({
   return (
     <div className="mt-8 flex justify-between">
       {canGoBack ? (
-        <Button
-          variant="secondary"
-          onClick={onBack}
-          disabled={saving}
-        >
+        <Button variant="secondary" onClick={onBack} disabled={saving}>
           Back
         </Button>
       ) : (
@@ -41,10 +37,7 @@ export function OnboardingStepNav({
           {saving ? 'Saving...' : 'Next'}
         </Button>
       ) : (
-        <Button
-          onClick={onFinish}
-          disabled={!canFinish || saving}
-        >
+        <Button onClick={onFinish} disabled={!canFinish || saving}>
           {saving ? 'Saving...' : 'Finish'}
         </Button>
       )}

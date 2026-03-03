@@ -1,9 +1,6 @@
 import type { Skill } from '@entities/skill/types';
 
-export type OnboardingStatus =
-  | 'NOT_STARTED'
-  | 'IN_PROGRESS'
-  | 'COMPLETED';
+export type OnboardingStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
 
 export interface User {
   id: string;

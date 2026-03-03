@@ -35,7 +35,9 @@ export function useOnboardingWizard() {
       try {
         const state = await onboardingApi.getState();
         setOnboardingStateFromResponse(state);
-      } catch {}
+      } catch {
+        // Keep current state; wizard works with defaults
+      }
     };
     loadFullState();
   }, [onboardingState?.preferences, setOnboardingStateFromResponse]);
@@ -105,19 +107,12 @@ export function useOnboardingWizard() {
         setOnboardingStateFromResponse(newState);
         onSuccess();
       } catch (err: unknown) {
-        setError(
-          extractErrorMessage(err, 'Failed to complete onboarding'),
-        );
+        setError(extractErrorMessage(err, 'Failed to complete onboarding'));
       } finally {
         setSaving(false);
       }
     },
-    [
-      currentPositionId,
-      interests,
-      growthType,
-      setOnboardingStateFromResponse,
-    ],
+    [currentPositionId, interests, growthType, setOnboardingStateFromResponse],
   );
 
   const step1Valid = !!currentPositionId;

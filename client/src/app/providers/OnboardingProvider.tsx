@@ -42,8 +42,7 @@ export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
     try {
       setOnboardingLoading(true);
       const profile = await userApi.getProfile();
-      const status =
-        profile.onboardingStatus ?? ONBOARDING_STATUS_DEFAULT;
+      const status = profile.onboardingStatus ?? ONBOARDING_STATUS_DEFAULT;
       setOnboardingState((prev) => ({
         status,
         startedAt: prev?.startedAt ?? new Date().toISOString(),

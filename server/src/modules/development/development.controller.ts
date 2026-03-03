@@ -30,7 +30,9 @@ export class DevelopmentController {
   }
 
   @Get('profile')
-  @ApiOperation({ summary: 'Get development profile (skills, goal, skill gaps, readiness)' })
+  @ApiOperation({
+    summary: 'Get development profile (skills, goal, skill gaps, readiness)',
+  })
   async getProfile(@Request() req: { user: { id: string } }) {
     return this.developmentService.getDevelopmentProfile(req.user.id);
   }

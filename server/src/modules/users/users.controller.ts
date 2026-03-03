@@ -62,7 +62,8 @@ export class UsersController {
 
   @Put('profile/skills')
   @ApiOperation({
-    summary: 'Replace current user skills (atomic). Duplicate skillId returns 400.',
+    summary:
+      'Replace current user skills (atomic). Duplicate skillId returns 400.',
   })
   async putSkills(@Request() req, @Body() putSkillsDto: PutSkillsDto) {
     return this.usersService.putSkills(req.user.id, putSkillsDto);

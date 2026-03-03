@@ -61,7 +61,9 @@ export const ProfileCard = ({
   const [showSkillsModal, setShowSkillsModal] = useState(false);
   const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
-  const [selectedLevels, setSelectedLevels] = useState<Record<string, number>>({});
+  const [selectedLevels, setSelectedLevels] = useState<Record<string, number>>(
+    {},
+  );
   const [savingSkills, setSavingSkills] = useState(false);
 
   useEffect(() => {

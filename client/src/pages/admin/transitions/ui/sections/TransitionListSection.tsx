@@ -20,32 +20,23 @@ export function TransitionListSection({
           <div className="flex justify-between items-center">
             <div>
               <h3 className="font-semibold">
-                {transition.fromPosition?.title ||
-                  transition.fromPositionId}{' '}
-                → {transition.toPosition?.title || transition.toPositionId}
+                {transition.fromPosition?.title || transition.fromPositionId} →{' '}
+                {transition.toPosition?.title || transition.toPositionId}
               </h3>
               <p className="text-sm text-gray-600">{transition.type}</p>
               {transition.requiredSkills &&
                 transition.requiredSkills.length > 0 && (
                   <p className="text-xs text-gray-500">
                     Skills:{' '}
-                    {transition.requiredSkills
-                      .map((s) => s.name)
-                      .join(', ')}
+                    {transition.requiredSkills.map((s) => s.name).join(', ')}
                   </p>
                 )}
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                onClick={() => onEdit(transition)}
-              >
+              <Button variant="secondary" onClick={() => onEdit(transition)}>
                 Edit
               </Button>
-              <Button
-                variant="danger"
-                onClick={() => onDelete(transition.id)}
-              >
+              <Button variant="danger" onClick={() => onDelete(transition.id)}>
                 Delete
               </Button>
             </div>

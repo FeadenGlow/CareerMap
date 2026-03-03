@@ -25,8 +25,7 @@ export function GoalSection({
       <h2 className="text-lg font-semibold mb-4">Goal</h2>
       {goal ? (
         <p className="text-gray-700 mb-4">
-          Current goal:{' '}
-          {goal.targetPosition?.title ?? goal.targetPositionId}
+          Current goal: {goal.targetPosition?.title ?? goal.targetPositionId}
         </p>
       ) : (
         <p className="text-gray-500 mb-4">No goal set</p>
@@ -44,10 +43,7 @@ export function GoalSection({
             </option>
           ))}
         </select>
-        <Button
-          onClick={onSave}
-          disabled={saving || !selectedGoalId}
-        >
+        <Button onClick={onSave} disabled={saving || !selectedGoalId}>
           {saving ? 'Saving…' : 'Save'}
         </Button>
       </div>

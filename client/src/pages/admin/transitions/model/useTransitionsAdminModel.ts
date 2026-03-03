@@ -26,8 +26,9 @@ export function useTransitionsAdminModel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTransition, setEditingTransition] =
-    useState<Transition | null>(null);
+  const [editingTransition, setEditingTransition] = useState<Transition | null>(
+    null,
+  );
 
   const form = useForm<TransitionFormData>({
     resolver: zodResolver(transitionSchema),

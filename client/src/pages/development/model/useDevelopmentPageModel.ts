@@ -37,7 +37,10 @@ export function useDevelopmentPageModel() {
   }, [loadProfile]);
 
   useEffect(() => {
-    positionApi.getAll().then(setPositions).catch(() => {});
+    positionApi
+      .getAll()
+      .then(setPositions)
+      .catch(() => {});
   }, []);
 
   const handleSaveGoal = useCallback(async () => {

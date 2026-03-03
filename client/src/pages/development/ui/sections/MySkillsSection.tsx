@@ -52,10 +52,7 @@ export function MySkillsSection({
                   step={1}
                   value={us.level}
                   onChange={(e) =>
-                    onLevelChange(
-                      us.skillId,
-                      parseInt(e.target.value, 10) || 0,
-                    )
+                    onLevelChange(us.skillId, parseInt(e.target.value, 10) || 0)
                   }
                   className="w-14 px-2 py-1 text-sm border border-gray-300 rounded"
                 />

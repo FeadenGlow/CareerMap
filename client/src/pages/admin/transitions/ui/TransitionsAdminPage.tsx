@@ -61,7 +61,9 @@ export function TransitionsAdminPage() {
       <TransitionFormModal
         isOpen={model.isModalOpen}
         onClose={model.closeModal}
-        title={model.editingTransition ? 'Edit Transition' : 'Create Transition'}
+        title={
+          model.editingTransition ? 'Edit Transition' : 'Create Transition'
+        }
         positions={model.positions}
         skills={model.skills}
         register={model.form.register}

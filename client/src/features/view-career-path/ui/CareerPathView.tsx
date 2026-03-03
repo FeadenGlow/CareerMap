@@ -85,10 +85,16 @@ export const CareerPathView = () => {
             <h1 className="text-xl font-semibold">Career Paths</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">{user?.email}</span>
-              <Button variant="secondary" onClick={() => navigate(ROUTES.PROFILE)}>
+              <Button
+                variant="secondary"
+                onClick={() => navigate(ROUTES.PROFILE)}
+              >
                 Profile
               </Button>
-              <Button variant="secondary" onClick={() => navigate(ROUTES.DEVELOPMENT)}>
+              <Button
+                variant="secondary"
+                onClick={() => navigate(ROUTES.DEVELOPMENT)}
+              >
                 Development
               </Button>
               {(user?.role === 'HR' || user?.role === 'ADMIN') && (

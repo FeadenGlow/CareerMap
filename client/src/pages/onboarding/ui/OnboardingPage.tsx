@@ -51,9 +51,7 @@ export function OnboardingPage() {
             canNext={wizard.canNext}
             onNext={wizard.handleNext}
             canFinish={
-              wizard.step3Valid &&
-              wizard.step1Valid &&
-              wizard.step2Valid
+              wizard.step3Valid && wizard.step1Valid && wizard.step2Valid
             }
             onFinish={() =>
               wizard.handleComplete(() =>

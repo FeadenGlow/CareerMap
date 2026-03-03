@@ -152,7 +152,6 @@ export class UsersService {
     }
 
     for (const item of dto.skills) {
-      const level = Math.max(SKILL_LEVEL_MIN, Math.min(SKILL_LEVEL_MAX, item.level));
       const skill = await prisma.skill.findUnique({
         where: { id: item.skillId },
       });
