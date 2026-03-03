@@ -1,9 +1,9 @@
-export type CareerScenarioType =
-  | 'FAST_GROWTH'
-  | 'EXPERT_PATH'
-  | 'MANAGER_PATH';
+export type CareerScenarioType = 'FAST_GROWTH' | 'EXPERT_PATH' | 'MANAGER_PATH';
 
-export const CareerScenarioTypeEnum: Record<CareerScenarioType, CareerScenarioType> = {
+export const CareerScenarioTypeEnum: Record<
+  CareerScenarioType,
+  CareerScenarioType
+> = {
   FAST_GROWTH: 'FAST_GROWTH',
   EXPERT_PATH: 'EXPERT_PATH',
   MANAGER_PATH: 'MANAGER_PATH',
@@ -44,10 +44,7 @@ export const MANAGER_BONUS_IF_EDGE_TO_MGMT = 0.02;
 
 const MANAGEMENT_TITLE_KEYWORDS = ['manager', 'lead', 'head', 'leadership'];
 
-export function isManagementTarget(
-  department: string,
-  title: string,
-): boolean {
+export function isManagementTarget(department: string, title: string): boolean {
   const d = department.toLowerCase();
   if (
     d.includes('management') ||

@@ -46,7 +46,8 @@ export class RecommendationsQueryDto {
 
   @ApiPropertyOptional({
     enum: ['FAST_GROWTH', 'EXPERT_PATH', 'MANAGER_PATH'],
-    description: 'Override scenario for this request only (does not save to user)',
+    description:
+      'Override scenario for this request only (does not save to user)',
   })
   @IsOptional()
   @IsEnum(CareerScenarioTypeEnum)

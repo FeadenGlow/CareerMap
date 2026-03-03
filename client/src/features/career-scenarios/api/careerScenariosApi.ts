@@ -1,8 +1,5 @@
 import { apiClient } from '@shared/api/client';
-import type {
-  CareerScenarioType,
-  ScenariosResponse,
-} from '../types';
+import type { CareerScenarioType, ScenariosResponse } from '../types';
 
 export const careerScenariosApi = {
   getScenarios: (): Promise<ScenariosResponse> =>

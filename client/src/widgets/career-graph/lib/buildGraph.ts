@@ -15,10 +15,8 @@ export const buildGraph = (
   transitions: Transition[],
   options?: BuildGraphOptions,
 ): { nodes: Node[]; edges: Edge[] } => {
-  const {
-    recommendedTransitionFrequency = new Map(),
-    scenarioTheme,
-  } = options ?? {};
+  const { recommendedTransitionFrequency = new Map(), scenarioTheme } =
+    options ?? {};
   const maxFreq =
     recommendedTransitionFrequency.size > 0
       ? Math.max(...recommendedTransitionFrequency.values(), 1)

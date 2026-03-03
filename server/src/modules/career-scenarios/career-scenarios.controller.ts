@@ -9,7 +9,9 @@ import { SetActiveScenarioDto } from './dto/set-active-scenario.dto';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class CareerScenariosController {
-  constructor(private readonly careerScenariosService: CareerScenariosService) {}
+  constructor(
+    private readonly careerScenariosService: CareerScenariosService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get available scenarios and active one' })
@@ -23,6 +25,9 @@ export class CareerScenariosController {
     @Request() req: { user: { id: string } },
     @Body() dto: SetActiveScenarioDto,
   ) {
-    return this.careerScenariosService.setActiveScenario(req.user.id, dto.scenario);
+    return this.careerScenariosService.setActiveScenario(
+      req.user.id,
+      dto.scenario,
+    );
   }
 }

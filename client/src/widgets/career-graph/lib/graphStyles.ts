@@ -62,6 +62,8 @@ export const getEdgeStyle = (
     stroke: baseColor,
     strokeWidth: width,
     strokeDasharray: transition.isPartiallyAvailable ? '5,5' : undefined,
-    opacity: useScenarioHighlight ? 0.6 + 0.4 * Math.min(1, recommendedWeight) : 1,
+    opacity: useScenarioHighlight
+      ? 0.6 + 0.4 * Math.min(1, recommendedWeight)
+      : 1,
   };
 };

@@ -162,8 +162,7 @@ export const CareerPathView = () => {
   const scenarioThemeForGraph = useMemo(() => {
     const s = scenarios.find((sc) => sc.type === activeScenario);
     const defaults = DEFAULT_SCENARIO_THEMES[activeScenario];
-    const highlight =
-      s?.theme?.highlight ?? defaults.highlight;
+    const highlight = s?.theme?.highlight ?? defaults.highlight;
     const accent = s?.theme?.accent ?? defaults.accent;
     return { highlightColor: highlight, accent };
   }, [scenarios, activeScenario]);
@@ -281,15 +280,22 @@ export const CareerPathView = () => {
                   ))}
                 </div>
                 <p className="text-sm text-gray-600">
-                  {scenarios.find((s) => s.type === activeScenario)?.description}
+                  {
+                    scenarios.find((s) => s.type === activeScenario)
+                      ?.description
+                  }
                 </p>
                 {scenarioSaveError && (
-                  <p className="text-sm text-red-600 mt-1">{scenarioSaveError}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {scenarioSaveError}
+                  </p>
                 )}
               </div>
             )}
             {recommendationsLoading && (
-              <p className="text-sm text-gray-500 mb-2">Loading recommendations…</p>
+              <p className="text-sm text-gray-500 mb-2">
+                Loading recommendations…
+              </p>
             )}
             {!recommendationsLoading &&
               recommendations?.reason === 'ok' &&

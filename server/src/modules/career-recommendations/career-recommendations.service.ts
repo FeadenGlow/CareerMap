@@ -11,10 +11,6 @@ import {
   MAX_TARGETS,
   MAX_CANDIDATES_PER_TARGET,
   MAX_UNIQUE_TARGETS_IN_TOP,
-  W_REACHABILITY,
-  W_TIME,
-  W_DIFFICULTY,
-  W_INTEREST,
   W_BEAM_LENGTH,
   W_BEAM_EDGE_READINESS,
   HISTORY_BIAS_CAP,
@@ -310,8 +306,7 @@ export class CareerRecommendationService {
           levelDiff >= 0 && levelDiff <= 2 ? 2 : levelDiff > 2 ? 1 : 0;
         const distScore = maxDepth - (dist.get(id) ?? maxDepth);
         const isMgmt = isManagementTarget(pos.department, pos.title);
-        const mgmtBoost =
-          scenario === 'MANAGER_PATH' && isMgmt ? 4 : 0;
+        const mgmtBoost = scenario === 'MANAGER_PATH' && isMgmt ? 4 : 0;
         return {
           id,
           pos,
@@ -516,7 +511,10 @@ export class CareerRecommendationService {
         const targetPos = graph.positions.get(
           path[path.length - 1].toPositionId,
         );
-        if (targetPos && isManagementTarget(targetPos.department, targetPos.title)) {
+        if (
+          targetPos &&
+          isManagementTarget(targetPos.department, targetPos.title)
+        ) {
           scenarioBonus += MANAGER_BONUS_IF_TARGET_MGMT;
         }
         for (const step of path) {

@@ -1,7 +1,4 @@
-export type CareerScenarioType =
-  | 'FAST_GROWTH'
-  | 'EXPERT_PATH'
-  | 'MANAGER_PATH';
+export type CareerScenarioType = 'FAST_GROWTH' | 'EXPERT_PATH' | 'MANAGER_PATH';
 
 export interface ScenarioTheme {
   accent: string;

@@ -31,12 +31,7 @@ export const CareerGraph = ({
         recommendedTransitionFrequency,
         scenarioTheme,
       }),
-    [
-      positions,
-      transitions,
-      recommendedTransitionFrequency,
-      scenarioTheme,
-    ],
+    [positions, transitions, recommendedTransitionFrequency, scenarioTheme],
   );
 
   const transitionById = useMemo(

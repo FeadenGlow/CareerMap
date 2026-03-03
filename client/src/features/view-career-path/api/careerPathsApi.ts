@@ -22,7 +22,12 @@ export type RecommendationReason =
   | 'ok';
 
 export interface RecommendationItem {
-  targetPosition: { id: string; title: string; level: number; department: string };
+  targetPosition: {
+    id: string;
+    title: string;
+    level: number;
+    department: string;
+  };
   transitions: Array<{
     id: string;
     fromPositionId: string;
@@ -37,8 +42,16 @@ export interface RecommendationItem {
     overall: number;
   };
   explanation: {
-    topMissingSkills: Array<{ id: string; name: string; deficitPercent?: number }>;
-    topContributors: Array<{ id: string; name: string; deficitPercent?: number }>;
+    topMissingSkills: Array<{
+      id: string;
+      name: string;
+      deficitPercent?: number;
+    }>;
+    topContributors: Array<{
+      id: string;
+      name: string;
+      deficitPercent?: number;
+    }>;
     notes: string[];
   };
 }
