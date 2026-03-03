@@ -8,4 +8,3 @@ import { CareerPathsController } from './career-paths.controller';
   exports: [CareerPathsService],
 })
 export class CareerPathsModule {}
-

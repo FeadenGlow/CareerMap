@@ -11,4 +11,3 @@ export class CreateSkillDto {
   @IsOptional()
   category?: string;
 }
-

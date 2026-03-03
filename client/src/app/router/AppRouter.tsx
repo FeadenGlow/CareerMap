@@ -1,10 +1,20 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { ROUTES } from '@app/config/routes';
 import { useAuth } from '@app/providers/AuthProvider';
+import { useOnboarding } from '@app/providers/OnboardingProvider';
 import { LoginPage } from '@features/auth/ui/LoginPage';
 import { RegisterPage } from '@features/auth/ui/RegisterPage';
 import { CareerPathView } from '@features/view-career-path/ui/CareerPathView';
 import { ProfilePage } from '@pages/ProfilePage';
-import { PositionsAdminPage, SkillsAdminPage, TransitionsAdminPage } from '@pages/admin';
+import { DevelopmentPage } from '@pages/development';
+import { OnboardingPage } from '@pages/onboarding';
+import {
+  PositionsAdminPage,
+  SkillsAdminPage,
+  TransitionsAdminPage,
+} from '@pages/admin';
+import { LoadingSpinner } from '@shared/ui/LoadingSpinner';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -14,7 +24,33 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={ROUTES.LOGIN} replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const OnboardingGate = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate();
+  const { onboardingCompleted, onboardingLoading } = useOnboarding();
+
+  useEffect(() => {
+    if (onboardingLoading) return;
+    if (!onboardingCompleted) {
+      navigate(ROUTES.ONBOARDING, { replace: true });
+    }
+  }, [onboardingLoading, onboardingCompleted, navigate]);
+
+  if (onboardingLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!onboardingCompleted) {
+    return null;
   }
 
   return <>{children}</>;
@@ -28,11 +64,11 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
   if (user.role !== 'HR' && user.role !== 'ADMIN') {
-    return <Navigate to="/career-paths" replace />;
+    return <Navigate to={ROUTES.CAREER_PATHS} replace />;
   }
 
   return <>{children}</>;
@@ -43,50 +79,91 @@ export const AppRouter = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={user ? <Navigate to="/career-paths" replace /> : <LoginPage />} />
-      <Route path="/register" element={user ? <Navigate to="/career-paths" replace /> : <RegisterPage />} />
       <Route
-        path="/career-paths"
+        path={ROUTES.LOGIN}
+        element={
+          user ? <Navigate to={ROUTES.CAREER_PATHS} replace /> : <LoginPage />
+        }
+      />
+      <Route
+        path={ROUTES.REGISTER}
+        element={
+          user ? (
+            <Navigate to={ROUTES.CAREER_PATHS} replace />
+          ) : (
+            <RegisterPage />
+          )
+        }
+      />
+      <Route
+        path={ROUTES.ONBOARDING}
         element={
           <ProtectedRoute>
-            <CareerPathView />
+            <OnboardingPage />
           </ProtectedRoute>
         }
       />
       <Route
-        path="/profile"
+        path={ROUTES.CAREER_PATHS}
         element={
           <ProtectedRoute>
-            <ProfilePage />
+            <OnboardingGate>
+              <CareerPathView />
+            </OnboardingGate>
           </ProtectedRoute>
         }
       />
       <Route
-        path="/admin/positions"
+        path={ROUTES.PROFILE}
+        element={
+          <ProtectedRoute>
+            <OnboardingGate>
+              <ProfilePage />
+            </OnboardingGate>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.DEVELOPMENT}
+        element={
+          <ProtectedRoute>
+            <OnboardingGate>
+              <DevelopmentPage />
+            </OnboardingGate>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ADMIN_POSITIONS}
         element={
           <AdminRoute>
-            <PositionsAdminPage />
+            <OnboardingGate>
+              <PositionsAdminPage />
+            </OnboardingGate>
           </AdminRoute>
         }
       />
       <Route
-        path="/admin/skills"
+        path={ROUTES.ADMIN_SKILLS}
         element={
           <AdminRoute>
-            <SkillsAdminPage />
+            <OnboardingGate>
+              <SkillsAdminPage />
+            </OnboardingGate>
           </AdminRoute>
         }
       />
       <Route
-        path="/admin/transitions"
+        path={ROUTES.ADMIN_TRANSITIONS}
         element={
           <AdminRoute>
-            <TransitionsAdminPage />
+            <OnboardingGate>
+              <TransitionsAdminPage />
+            </OnboardingGate>
           </AdminRoute>
         }
       />
-      <Route path="/" element={<Navigate to="/career-paths" replace />} />
+      <Route path="/" element={<Navigate to={ROUTES.CAREER_PATHS} replace />} />
     </Routes>
   );
 };
-

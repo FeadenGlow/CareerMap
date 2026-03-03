@@ -29,4 +29,3 @@ export interface UpdateTransitionDto {
   toPositionId?: string;
   requiredSkillIds?: string[];
 }
-

@@ -26,4 +26,3 @@ export class UpdateTransitionDto {
   @IsOptional()
   requiredSkillIds?: string[];
 }
-

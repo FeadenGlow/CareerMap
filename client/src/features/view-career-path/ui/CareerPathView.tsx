@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@app/config/routes';
 import { useAuth } from '@app/providers/AuthProvider';
 import { CareerGraph } from '@widgets/career-graph/ui/CareerGraph';
 import { careerPathsApi } from '../api/careerPathsApi';
@@ -12,11 +14,14 @@ import { ErrorMessage } from '@shared/ui/ErrorMessage';
 import { positionApi } from '@entities/position/api/positionApi';
 
 export const CareerPathView = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [graph, setGraph] = useState<CareerGraphType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPosition, setSelectedPosition] = useState<Position | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<Position | null>(
+    null,
+  );
   const [positionDetails, setPositionDetails] = useState<any>(null);
 
   useEffect(() => {
@@ -80,11 +85,17 @@ export const CareerPathView = () => {
             <h1 className="text-xl font-semibold">Career Paths</h1>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">{user?.email}</span>
-              <Button variant="secondary" onClick={() => (window.location.href = '/profile')}>
+              <Button variant="secondary" onClick={() => navigate(ROUTES.PROFILE)}>
                 Profile
               </Button>
+              <Button variant="secondary" onClick={() => navigate(ROUTES.DEVELOPMENT)}>
+                Development
+              </Button>
               {(user?.role === 'HR' || user?.role === 'ADMIN') && (
-                <Button variant="secondary" onClick={() => (window.location.href = '/admin/positions')}>
+                <Button
+                  variant="secondary"
+                  onClick={() => navigate(ROUTES.ADMIN_POSITIONS)}
+                >
                   Admin
                 </Button>
               )}
@@ -99,7 +110,9 @@ export const CareerPathView = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card>
           <div className="mb-4">
-            <h2 className="text-lg font-semibold mb-2">Career Path Visualization</h2>
+            <h2 className="text-lg font-semibold mb-2">
+              Career Path Visualization
+            </h2>
             <div className="flex gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-0.5 bg-green-500"></div>
@@ -115,11 +128,19 @@ export const CareerPathView = () => {
               </div>
             </div>
           </div>
-          <CareerGraph positions={graph.positions} transitions={graph.transitions} onNodeClick={handleNodeClick} />
+          <CareerGraph
+            positions={graph.positions}
+            transitions={graph.transitions}
+            onNodeClick={handleNodeClick}
+          />
         </Card>
       </div>
 
-      <Modal isOpen={!!selectedPosition} onClose={() => setSelectedPosition(null)} title={selectedPosition?.title}>
+      <Modal
+        isOpen={!!selectedPosition}
+        onClose={() => setSelectedPosition(null)}
+        title={selectedPosition?.title}
+      >
         {positionDetails && (
           <div className="space-y-4">
             <div>
@@ -146,4 +167,3 @@ export const CareerPathView = () => {
     </div>
   );
 };
-

@@ -15,4 +15,3 @@ export class CreatePositionDto {
   @IsString()
   department: string;
 }
-

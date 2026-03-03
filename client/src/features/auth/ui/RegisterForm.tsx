@@ -6,14 +6,16 @@ import { Button } from '@shared/ui/Button';
 import { Input } from '@shared/ui/Input';
 import { useAuth } from '@app/providers/AuthProvider';
 
-const registerSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+const registerSchema = z
+  .object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -45,8 +47,18 @@ export const RegisterForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && <div className="text-red-600 text-sm">{error}</div>}
-      <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
-      <Input label="Password" type="password" error={errors.password?.message} {...register('password')} />
+      <Input
+        label="Email"
+        type="email"
+        error={errors.email?.message}
+        {...register('email')}
+      />
+      <Input
+        label="Password"
+        type="password"
+        error={errors.password?.message}
+        {...register('password')}
+      />
       <Input
         label="Confirm Password"
         type="password"
@@ -59,4 +71,3 @@ export const RegisterForm = () => {
     </form>
   );
 };
-

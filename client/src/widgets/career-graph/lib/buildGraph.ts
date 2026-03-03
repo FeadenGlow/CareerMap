@@ -4,14 +4,20 @@ import type { Transition } from '@entities/transition/types';
 import { getEdgeStyle } from './graphStyles';
 import React from 'react';
 
-export const buildGraph = (positions: Position[], transitions: Transition[]): { nodes: Node[]; edges: Edge[] } => {
-  const levelGroups = positions.reduce((acc, position) => {
-    if (!acc[position.level]) {
-      acc[position.level] = [];
-    }
-    acc[position.level].push(position);
-    return acc;
-  }, {} as Record<number, Position[]>);
+export const buildGraph = (
+  positions: Position[],
+  transitions: Transition[],
+): { nodes: Node[]; edges: Edge[] } => {
+  const levelGroups = positions.reduce(
+    (acc, position) => {
+      if (!acc[position.level]) {
+        acc[position.level] = [];
+      }
+      acc[position.level].push(position);
+      return acc;
+    },
+    {} as Record<number, Position[]>,
+  );
 
   const nodes: Node[] = [];
 
@@ -36,9 +42,21 @@ export const buildGraph = (positions: Position[], transitions: Transition[]): { 
             label: React.createElement(
               'div',
               { className: 'text-center' },
-              React.createElement('div', { className: 'font-semibold' }, position.title),
-              React.createElement('div', { className: 'text-xs text-gray-500' }, position.department),
-              React.createElement('div', { className: 'text-xs text-gray-400' }, `Level ${position.level}`)
+              React.createElement(
+                'div',
+                { className: 'font-semibold' },
+                position.title,
+              ),
+              React.createElement(
+                'div',
+                { className: 'text-xs text-gray-500' },
+                position.department,
+              ),
+              React.createElement(
+                'div',
+                { className: 'text-xs text-gray-400' },
+                `Level ${position.level}`,
+              ),
             ),
             position,
           },
@@ -48,20 +66,20 @@ export const buildGraph = (positions: Position[], transitions: Transition[]): { 
 
   const edges: Edge[] = transitions.map((transition) => {
     const edgeStyle = getEdgeStyle(transition);
-    const labelText = transition.isRecommended 
-      ? `✓ ${transition.type}` 
-      : transition.isPartiallyAvailable 
-      ? `⚠ ${transition.type}` 
-      : transition.type;
-    
+    const labelText = transition.isRecommended
+      ? `✓ ${transition.type}`
+      : transition.isPartiallyAvailable
+        ? `⚠ ${transition.type}`
+        : transition.type;
+
     return {
       id: transition.id,
       source: transition.fromPositionId,
       target: transition.toPositionId,
       label: labelText,
       style: edgeStyle,
-      labelStyle: { 
-        fill: edgeStyle.stroke, 
+      labelStyle: {
+        fill: edgeStyle.stroke,
         fontWeight: transition.isRecommended ? 700 : 600,
         fontSize: transition.isRecommended ? '12px' : '11px',
       },
@@ -70,4 +88,3 @@ export const buildGraph = (positions: Position[], transitions: Transition[]): { 
 
   return { nodes, edges };
 };
-

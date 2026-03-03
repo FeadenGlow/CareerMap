@@ -17,7 +17,8 @@ interface AuthResponse {
 }
 
 export const authApi = {
-  login: (data: LoginDto): Promise<AuthResponse> => apiClient.post('/auth/login', data),
-  register: (data: RegisterDto): Promise<AuthResponse> => apiClient.post('/auth/register', data),
+  login: (data: LoginDto): Promise<AuthResponse> =>
+    apiClient.post('/auth/login', data),
+  register: (data: RegisterDto): Promise<AuthResponse> =>
+    apiClient.post('/auth/register', data),
 };
-

@@ -62,7 +62,7 @@ jobs:
 
       - name: Lint code
         working-directory: ./server
-        run: npm run lint:check || npm run lint
+        run: npm run lint:check
 
       - name: Run tests
         working-directory: ./server

@@ -18,4 +18,3 @@ export class UpdatePositionDto {
   @IsOptional()
   department?: string;
 }
-

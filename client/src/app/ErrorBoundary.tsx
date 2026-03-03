@@ -29,7 +29,9 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="max-w-md w-full">
-            <ErrorMessage message={this.state.error?.message || 'Something went wrong'} />
+            <ErrorMessage
+              message={this.state.error?.message || 'Something went wrong'}
+            />
             <button
               onClick={() => this.setState({ hasError: false, error: null })}
               className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -44,4 +46,3 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-

@@ -7,6 +7,8 @@ import { PositionsModule } from './modules/positions/positions.module';
 import { SkillsModule } from './modules/skills/skills.module';
 import { TransitionsModule } from './modules/transitions/transitions.module';
 import { CareerPathsModule } from './modules/career-paths/career-paths.module';
+import { OnboardingModule } from './modules/onboarding/onboarding.module';
+import { DevelopmentModule } from './modules/development/development.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { CareerPathsModule } from './modules/career-paths/career-paths.module';
     SkillsModule,
     TransitionsModule,
     CareerPathsModule,
+    OnboardingModule,
+    DevelopmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

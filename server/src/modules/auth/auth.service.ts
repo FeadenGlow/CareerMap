@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import prisma from '../../config/prisma';
@@ -35,7 +39,11 @@ export class AuthService {
     });
 
     return {
-      access_token: this.jwtService.sign({ sub: user.id, email: user.email, role: user.role }),
+      access_token: this.jwtService.sign({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      }),
       user,
     };
   }
@@ -49,14 +57,21 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     return {
-      access_token: this.jwtService.sign({ sub: user.id, email: user.email, role: user.role }),
+      access_token: this.jwtService.sign({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      }),
       user: {
         id: user.id,
         email: user.email,
@@ -66,4 +81,3 @@ export class AuthService {
     };
   }
 }
-

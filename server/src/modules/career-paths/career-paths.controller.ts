@@ -18,8 +18,13 @@ export class CareerPathsController {
 
   @Get('from/:positionId')
   @ApiOperation({ summary: 'Get career paths from specific position' })
-  async getCareerPathsFromPosition(@Param('positionId') positionId: string, @Request() req) {
-    return this.careerPathsService.getCareerPathsFromPosition(positionId, req.user?.id);
+  async getCareerPathsFromPosition(
+    @Param('positionId') positionId: string,
+    @Request() req,
+  ) {
+    return this.careerPathsService.getCareerPathsFromPosition(
+      positionId,
+      req.user?.id,
+    );
   }
 }
-

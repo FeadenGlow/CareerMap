@@ -7,10 +7,7 @@ import { UpdatePositionDto } from './dto/update-position.dto';
 export class PositionsService {
   async findAll() {
     return prisma.position.findMany({
-      orderBy: [
-        { level: 'asc' },
-        { title: 'asc' },
-      ],
+      orderBy: [{ level: 'asc' }, { title: 'asc' }],
     });
   }
 
@@ -75,4 +72,3 @@ export class PositionsService {
     });
   }
 }
-

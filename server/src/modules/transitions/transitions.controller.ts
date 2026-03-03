@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -38,7 +47,10 @@ export class TransitionsController {
   @UseGuards(RolesGuard)
   @Roles('HR', 'ADMIN')
   @ApiOperation({ summary: 'Update transition (HR/Admin only)' })
-  update(@Param('id') id: string, @Body() updateTransitionDto: UpdateTransitionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTransitionDto: UpdateTransitionDto,
+  ) {
     return this.transitionsService.update(id, updateTransitionDto);
   }
 
@@ -50,4 +62,3 @@ export class TransitionsController {
     return this.transitionsService.remove(id);
   }
 }
-

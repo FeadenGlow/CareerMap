@@ -41,12 +41,21 @@ export const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && <div className="text-red-600 text-sm">{error}</div>}
-      <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
-      <Input label="Password" type="password" error={errors.password?.message} {...register('password')} />
+      <Input
+        label="Email"
+        type="email"
+        error={errors.email?.message}
+        {...register('email')}
+      />
+      <Input
+        label="Password"
+        type="password"
+        error={errors.password?.message}
+        {...register('password')}
+      />
       <Button type="submit" disabled={loading} className="w-full">
         {loading ? 'Logging in...' : 'Login'}
       </Button>
     </form>
   );
 };
-

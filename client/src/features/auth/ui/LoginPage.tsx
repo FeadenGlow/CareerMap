@@ -9,10 +9,12 @@ export const LoginPage = () => {
         <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
         <LoginForm />
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don't have an account? <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+          Don't have an account?{' '}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Register
+          </Link>
         </p>
       </Card>
     </div>
   );
 };
-

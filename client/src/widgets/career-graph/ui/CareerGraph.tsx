@@ -13,8 +13,15 @@ interface CareerGraphProps {
   onNodeClick?: (position: Position) => void;
 }
 
-export const CareerGraph = ({ positions, transitions, onNodeClick }: CareerGraphProps) => {
-  const { nodes, edges } = useMemo(() => buildGraph(positions, transitions), [positions, transitions]);
+export const CareerGraph = ({
+  positions,
+  transitions,
+  onNodeClick,
+}: CareerGraphProps) => {
+  const { nodes, edges } = useMemo(
+    () => buildGraph(positions, transitions),
+    [positions, transitions],
+  );
 
   const handleNodeClick: NodeMouseHandler = useCallback(
     (_event, node) => {
@@ -22,12 +29,19 @@ export const CareerGraph = ({ positions, transitions, onNodeClick }: CareerGraph
         onNodeClick(node.data.position);
       }
     },
-    [onNodeClick]
+    [onNodeClick],
   );
 
   return (
     <div style={{ width: '100%', height: '600px' }}>
-      <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} edgeTypes={edgeTypes} onNodeClick={handleNodeClick} fitView>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        onNodeClick={handleNodeClick}
+        fitView
+      >
         <Background />
         <Controls />
         <MiniMap />
@@ -35,4 +49,3 @@ export const CareerGraph = ({ positions, transitions, onNodeClick }: CareerGraph
     </div>
   );
 };
-

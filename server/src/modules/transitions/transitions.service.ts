@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import prisma from '../../config/prisma';
 import { CreateTransitionDto } from './dto/create-transition.dto';
 import { UpdateTransitionDto } from './dto/update-transition.dto';
@@ -49,11 +53,16 @@ export class TransitionsService {
       throw new NotFoundException('To position not found');
     }
 
-    if (createTransitionDto.fromPositionId === createTransitionDto.toPositionId) {
+    if (
+      createTransitionDto.fromPositionId === createTransitionDto.toPositionId
+    ) {
       throw new BadRequestException('From and to positions cannot be the same');
     }
 
-    if (createTransitionDto.requiredSkillIds && createTransitionDto.requiredSkillIds.length > 0) {
+    if (
+      createTransitionDto.requiredSkillIds &&
+      createTransitionDto.requiredSkillIds.length > 0
+    ) {
       const skills = await prisma.skill.findMany({
         where: {
           id: {
@@ -73,7 +82,8 @@ export class TransitionsService {
         fromPositionId: createTransitionDto.fromPositionId,
         toPositionId: createTransitionDto.toPositionId,
         requiredSkills: {
-          connect: createTransitionDto.requiredSkillIds?.map((id) => ({ id })) || [],
+          connect:
+            createTransitionDto.requiredSkillIds?.map((id) => ({ id })) || [],
         },
       },
       include: {
@@ -139,11 +149,17 @@ export class TransitionsService {
       where: { id },
       data: {
         ...(updateTransitionDto.type && { type: updateTransitionDto.type }),
-        ...(updateTransitionDto.fromPositionId && { fromPositionId: updateTransitionDto.fromPositionId }),
-        ...(updateTransitionDto.toPositionId && { toPositionId: updateTransitionDto.toPositionId }),
+        ...(updateTransitionDto.fromPositionId && {
+          fromPositionId: updateTransitionDto.fromPositionId,
+        }),
+        ...(updateTransitionDto.toPositionId && {
+          toPositionId: updateTransitionDto.toPositionId,
+        }),
         ...(updateTransitionDto.requiredSkillIds && {
           requiredSkills: {
-            set: updateTransitionDto.requiredSkillIds.map((skillId) => ({ id: skillId })),
+            set: updateTransitionDto.requiredSkillIds.map((skillId) => ({
+              id: skillId,
+            })),
           },
         }),
       },
@@ -169,4 +185,3 @@ export class TransitionsService {
     });
   }
 }
-

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@app/config/routes';
 import { skillApi } from '@entities/skill/api/skillApi';
-import type { Skill, CreateSkillDto } from '@entities/skill/types';
+import type { Skill } from '@entities/skill/types';
 import { Card } from '@shared/ui/Card';
 import { Button } from '@shared/ui/Button';
 import { Input } from '@shared/ui/Input';
@@ -18,6 +20,7 @@ const skillSchema = z.object({
 type SkillFormData = z.infer<typeof skillSchema>;
 
 export const SkillsAdminPage = () => {
+  const navigate = useNavigate();
   const { logout } = useAuth();
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +98,10 @@ export const SkillsAdminPage = () => {
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl font-semibold">Manage Skills</h1>
             <div className="flex items-center gap-4">
-              <Button variant="secondary" onClick={() => (window.location.href = '/career-paths')}>
+              <Button
+                variant="secondary"
+                onClick={() => navigate(ROUTES.CAREER_PATHS)}
+              >
                 Career Paths
               </Button>
               <Button variant="secondary" onClick={logout}>
@@ -117,13 +123,18 @@ export const SkillsAdminPage = () => {
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-semibold">{skill.name}</h3>
-                  {skill.category && <p className="text-sm text-gray-600">{skill.category}</p>}
+                  {skill.category && (
+                    <p className="text-sm text-gray-600">{skill.category}</p>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <Button variant="secondary" onClick={() => handleEdit(skill)}>
                     Edit
                   </Button>
-                  <Button variant="danger" onClick={() => handleDelete(skill.id)}>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(skill.id)}
+                  >
                     Delete
                   </Button>
                 </div>
@@ -133,13 +144,33 @@ export const SkillsAdminPage = () => {
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => (setIsModalOpen(false), setEditingSkill(null), reset())} title={editingSkill ? 'Edit Skill' : 'Create Skill'}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => (setIsModalOpen(false), setEditingSkill(null), reset())}
+        title={editingSkill ? 'Edit Skill' : 'Create Skill'}
+      >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label="Name" error={errors.name?.message} {...register('name')} />
-          <Input label="Category" error={errors.category?.message} {...register('category')} />
+          <Input
+            label="Name"
+            error={errors.name?.message}
+            {...register('name')}
+          />
+          <Input
+            label="Category"
+            error={errors.category?.message}
+            {...register('category')}
+          />
           <div className="flex gap-2">
             <Button type="submit">{editingSkill ? 'Update' : 'Create'}</Button>
-            <Button type="button" variant="secondary" onClick={() => (setIsModalOpen(false), setEditingSkill(null), reset())}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => (
+                setIsModalOpen(false),
+                setEditingSkill(null),
+                reset()
+              )}
+            >
               Cancel
             </Button>
           </div>
@@ -148,4 +179,3 @@ export const SkillsAdminPage = () => {
     </div>
   );
 };
-

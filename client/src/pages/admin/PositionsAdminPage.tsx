@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@app/config/routes';
 import { positionApi } from '@entities/position/api/positionApi';
-import type { Position, CreatePositionDto } from '@entities/position/types';
+import type { Position } from '@entities/position/types';
 import { Card } from '@shared/ui/Card';
 import { Button } from '@shared/ui/Button';
 import { Input } from '@shared/ui/Input';
@@ -19,6 +21,7 @@ const positionSchema = z.object({
 type PositionFormData = z.infer<typeof positionSchema>;
 
 export const PositionsAdminPage = () => {
+  const navigate = useNavigate();
   const { logout } = useAuth();
   const [positions, setPositions] = useState<Position[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,7 +100,10 @@ export const PositionsAdminPage = () => {
           <div className="flex justify-between items-center h-16">
             <h1 className="text-xl font-semibold">Manage Positions</h1>
             <div className="flex items-center gap-4">
-              <Button variant="secondary" onClick={() => (window.location.href = '/career-paths')}>
+              <Button
+                variant="secondary"
+                onClick={() => navigate(ROUTES.CAREER_PATHS)}
+              >
                 Career Paths
               </Button>
               <Button variant="secondary" onClick={logout}>
@@ -124,10 +130,16 @@ export const PositionsAdminPage = () => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="secondary" onClick={() => handleEdit(position)}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleEdit(position)}
+                  >
                     Edit
                   </Button>
-                  <Button variant="danger" onClick={() => handleDelete(position.id)}>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(position.id)}
+                  >
                     Delete
                   </Button>
                 </div>
@@ -137,14 +149,45 @@ export const PositionsAdminPage = () => {
         </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => (setIsModalOpen(false), setEditingPosition(null), reset())} title={editingPosition ? 'Edit Position' : 'Create Position'}>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => (
+          setIsModalOpen(false),
+          setEditingPosition(null),
+          reset()
+        )}
+        title={editingPosition ? 'Edit Position' : 'Create Position'}
+      >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <Input label="Title" error={errors.title?.message} {...register('title')} />
-          <Input label="Level" type="number" error={errors.level?.message} {...register('level', { valueAsNumber: true })} />
-          <Input label="Department" error={errors.department?.message} {...register('department')} />
+          <Input
+            label="Title"
+            error={errors.title?.message}
+            {...register('title')}
+          />
+          <Input
+            label="Level"
+            type="number"
+            error={errors.level?.message}
+            {...register('level', { valueAsNumber: true })}
+          />
+          <Input
+            label="Department"
+            error={errors.department?.message}
+            {...register('department')}
+          />
           <div className="flex gap-2">
-            <Button type="submit">{editingPosition ? 'Update' : 'Create'}</Button>
-            <Button type="button" variant="secondary" onClick={() => (setIsModalOpen(false), setEditingPosition(null), reset())}>
+            <Button type="submit">
+              {editingPosition ? 'Update' : 'Create'}
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => (
+                setIsModalOpen(false),
+                setEditingPosition(null),
+                reset()
+              )}
+            >
               Cancel
             </Button>
           </div>
@@ -153,4 +196,3 @@ export const PositionsAdminPage = () => {
     </div>
   );
 };
-

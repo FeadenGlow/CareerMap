@@ -15,7 +15,8 @@ export interface CareerPathsFromPosition {
 
 export const careerPathsApi = {
   getCareerGraph: (): Promise<CareerGraph> => apiClient.get('/career-paths'),
-  getCareerPathsFromPosition: (positionId: string): Promise<CareerPathsFromPosition> =>
+  getCareerPathsFromPosition: (
+    positionId: string,
+  ): Promise<CareerPathsFromPosition> =>
     apiClient.get(`/career-paths/from/${positionId}`),
 };
-

@@ -8,4 +8,3 @@ import { TransitionsController } from './transitions.controller';
   exports: [TransitionsService],
 })
 export class TransitionsModule {}
-

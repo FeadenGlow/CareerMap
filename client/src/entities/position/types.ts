@@ -16,4 +16,3 @@ export interface UpdatePositionDto {
   level?: number;
   department?: string;
 }
-

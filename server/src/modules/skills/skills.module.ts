@@ -8,4 +8,3 @@ import { SkillsController } from './skills.controller';
   exports: [SkillsService],
 })
 export class SkillsModule {}
-

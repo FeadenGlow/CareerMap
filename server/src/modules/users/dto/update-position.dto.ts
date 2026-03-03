@@ -7,4 +7,3 @@ export class UpdatePositionDto {
   @IsUUID()
   positionId: string;
 }
-

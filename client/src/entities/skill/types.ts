@@ -13,4 +13,3 @@ export interface UpdateSkillDto {
   name?: string;
   category?: string;
 }
-

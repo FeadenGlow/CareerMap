@@ -8,27 +8,35 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  email      String     @unique
-  password   String
-  role       Role       @default(EMPLOYEE)
-  position   Position?  @relation(fields: [positionId], references: [id], onDelete: SetNull)
-  positionId String?
-  skills     UserSkill[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id                    String                @id @default(uuid())
+  email                 String                @unique
+  password              String
+  role                  Role                  @default(EMPLOYEE)
+  position              Position?              @relation("Position", fields: [positionId], references: [id], onDelete: SetNull)
+  positionId            String?
+  currentPosition       Position?             @relation("CurrentPosition", fields: [currentPositionId], references: [id], onDelete: SetNull)
+  currentPositionId     String?
+  interests             InterestType[]
+  growthType            GrowthType?
+  skills                UserSkill[]
+  developmentGoal       UserDevelopmentGoal?
+  onboardingProcess     OnboardingProcess?
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
 }
 
 model Position {
-  id          String       @id @default(uuid())
-  title       String
-  level       Int
-  department  String
-  users       User[]
-  from        Transition[] @relation("FromPosition")
-  to          Transition[] @relation("ToPosition")
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                     String                 @id @default(uuid())
+  title                  String
+  level                  Int
+  department             String
+  users                  User[]                 @relation("Position")
+  currentPositionUsers   User[]                 @relation("CurrentPosition")
+  developmentGoals       UserDevelopmentGoal[]
+  from                   Transition[]           @relation("FromPosition")
+  to                     Transition[]           @relation("ToPosition")
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
 }
 
 model Skill {
@@ -47,9 +55,22 @@ model UserSkill {
   userId    String
   skill     Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
   skillId   String
+  level     Int      @default(50)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, skillId])
+  @@index([userId])
+}
+
+model UserDevelopmentGoal {
+  id                String   @id @default(uuid())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String   @unique
+  targetPosition    Position @relation(fields: [targetPositionId], references: [id], onDelete: Cascade)
+  targetPositionId  String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model Transition {
@@ -64,6 +85,18 @@ model Transition {
   updatedAt       DateTime  @updatedAt
 }
 
+model OnboardingProcess {
+  id          String           @id @default(uuid())
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String            @unique
+  status      OnboardingStatus @default(NOT_STARTED)
+  startedAt   DateTime
+  completedAt DateTime?
+  lastStep    Int?
+  version     Int?              @default(1)
+  updatedAt   DateTime          @updatedAt
+}
+
 enum Role {
   EMPLOYEE
   HR
@@ -74,5 +107,23 @@ enum TransitionType {
   VERTICAL
   HORIZONTAL
   CHANGE
+}
+
+enum InterestType {
+  DEV
+  MANAGEMENT
+  DATA
+}
+
+enum GrowthType {
+  VERTICAL
+  HORIZONTAL
+  ROLE_CHANGE
+}
+
+enum OnboardingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
 }
 

@@ -7,10 +7,7 @@ import { UpdateSkillDto } from './dto/update-skill.dto';
 export class SkillsService {
   async findAll() {
     return prisma.skill.findMany({
-      orderBy: [
-        { category: 'asc' },
-        { name: 'asc' },
-      ],
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
     });
   }
 
@@ -69,4 +66,3 @@ export class SkillsService {
     });
   }
 }
-

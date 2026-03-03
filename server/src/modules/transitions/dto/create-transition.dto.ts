@@ -22,4 +22,3 @@ export class CreateTransitionDto {
   @IsUUID(4, { each: true })
   requiredSkillIds?: string[];
 }
-

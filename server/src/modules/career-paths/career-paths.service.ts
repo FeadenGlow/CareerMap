@@ -5,10 +5,7 @@ import prisma from '../../config/prisma';
 export class CareerPathsService {
   async getCareerGraph(userId?: string) {
     const positions = await prisma.position.findMany({
-      orderBy: [
-        { level: 'asc' },
-        { title: 'asc' },
-      ],
+      orderBy: [{ level: 'asc' }, { title: 'asc' }],
     });
 
     const transitions = await prisma.transition.findMany({
@@ -37,9 +34,13 @@ export class CareerPathsService {
       })),
       transitions: transitions.map((transition) => {
         const requiredSkillIds = transition.requiredSkills.map((s) => s.id);
-        const hasAllSkills = requiredSkillIds.length === 0 || requiredSkillIds.every((skillId) => userSkills.includes(skillId));
-        const hasSomeSkills = requiredSkillIds.length > 0 && requiredSkillIds.some((skillId) => userSkills.includes(skillId));
-        
+        const hasAllSkills =
+          requiredSkillIds.length === 0 ||
+          requiredSkillIds.every((skillId) => userSkills.includes(skillId));
+        const hasSomeSkills =
+          requiredSkillIds.length > 0 &&
+          requiredSkillIds.some((skillId) => userSkills.includes(skillId));
+
         return {
           id: transition.id,
           type: transition.type,
@@ -52,7 +53,9 @@ export class CareerPathsService {
           })),
           isRecommended: hasAllSkills,
           isPartiallyAvailable: hasSomeSkills && !hasAllSkills,
-          missingSkills: requiredSkillIds.filter((skillId) => !userSkills.includes(skillId)),
+          missingSkills: requiredSkillIds.filter(
+            (skillId) => !userSkills.includes(skillId),
+          ),
         };
       }),
     };
@@ -126,9 +129,13 @@ export class CareerPathsService {
       },
       directTransitions: transitions.map((transition) => {
         const requiredSkillIds = transition.requiredSkills.map((s) => s.id);
-        const hasAllSkills = requiredSkillIds.length === 0 || requiredSkillIds.every((skillId) => userSkills.includes(skillId));
-        const hasSomeSkills = requiredSkillIds.length > 0 && requiredSkillIds.some((skillId) => userSkills.includes(skillId));
-        
+        const hasAllSkills =
+          requiredSkillIds.length === 0 ||
+          requiredSkillIds.every((skillId) => userSkills.includes(skillId));
+        const hasSomeSkills =
+          requiredSkillIds.length > 0 &&
+          requiredSkillIds.some((skillId) => userSkills.includes(skillId));
+
         return {
           id: transition.id,
           type: transition.type,
@@ -145,7 +152,9 @@ export class CareerPathsService {
           })),
           isRecommended: hasAllSkills,
           isPartiallyAvailable: hasSomeSkills && !hasAllSkills,
-          missingSkills: requiredSkillIds.filter((skillId) => !userSkills.includes(skillId)),
+          missingSkills: requiredSkillIds.filter(
+            (skillId) => !userSkills.includes(skillId),
+          ),
         };
       }),
       reachablePositions: allReachablePositions.map((pos) => ({
@@ -157,4 +166,3 @@ export class CareerPathsService {
     };
   }
 }
-
