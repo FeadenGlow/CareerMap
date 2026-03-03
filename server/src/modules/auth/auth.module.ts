@@ -8,7 +8,10 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 const jwtOptions: JwtModuleOptions = {
   secret: jwtConfig.secret,
-  signOptions: { expiresIn: jwtConfig.expiresIn },
+  signOptions: {
+    // JWT accepts '7d' etc.; Nest typings expect number | StringValue
+    expiresIn: jwtConfig.expiresIn as never,
+  },
 };
 
 @Module({
