@@ -3,7 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  type ReactNode,
 } from 'react';
 import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from '@app/config/storageKeys';
 import { authApi } from '@features/auth/api/authApi';

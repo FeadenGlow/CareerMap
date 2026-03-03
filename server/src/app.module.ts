@@ -9,6 +9,8 @@ import { TransitionsModule } from './modules/transitions/transitions.module';
 import { CareerPathsModule } from './modules/career-paths/career-paths.module';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { DevelopmentModule } from './modules/development/development.module';
+import { CareerRecommendationsModule } from './modules/career-recommendations/career-recommendations.module';
+import { CareerScenariosModule } from './modules/career-scenarios/career-scenarios.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { DevelopmentModule } from './modules/development/development.module';
     SkillsModule,
     TransitionsModule,
     CareerPathsModule,
+    CareerRecommendationsModule,
+    CareerScenariosModule,
     OnboardingModule,
     DevelopmentModule,
   ],

@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export type IconName = 'target';
+export type IconName = 'target' | 'check' | 'warning';
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
   name: IconName;

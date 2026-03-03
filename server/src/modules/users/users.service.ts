@@ -4,7 +4,10 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
+import { TransitionHistorySource } from '@prisma/client';
 import prisma from '../../config/prisma';
+
+const HISTORY_DEDUP_WINDOW_MS = 10_000;
 import {
   SKILL_LEVEL_DEFAULT,
   SKILL_LEVEL_MIN,
@@ -96,18 +99,26 @@ export class UsersService {
   async updateUserPosition(
     userId: string,
     updatePositionDto: UpdatePositionDto,
+    actorUserId?: string,
   ) {
+    const newPositionId = updatePositionDto.positionId;
     const position = await prisma.position.findUnique({
-      where: { id: updatePositionDto.positionId },
+      where: { id: newPositionId },
     });
 
     if (!position) {
       throw new NotFoundException('Position not found');
     }
 
-    return prisma.user.update({
+    const userBefore = await prisma.user.findUnique({
       where: { id: userId },
-      data: { positionId: updatePositionDto.positionId },
+      select: { positionId: true },
+    });
+    const oldPositionId = userBefore?.positionId ?? null;
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { positionId: newPositionId },
       select: {
         id: true,
         email: true,
@@ -123,6 +134,63 @@ export class UsersService {
         },
       },
     });
+
+    if (oldPositionId !== newPositionId) {
+      const last = await prisma.userTransitionHistory.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: { toPositionId: true, fromPositionId: true, createdAt: true },
+      });
+      const now = Date.now();
+      const withinDedupWindow =
+        last &&
+        last.toPositionId === newPositionId &&
+        (last.fromPositionId ?? null) === oldPositionId &&
+        now - last.createdAt.getTime() < HISTORY_DEDUP_WINDOW_MS;
+      if (!withinDedupWindow) {
+        const source =
+          actorUserId == null
+            ? TransitionHistorySource.SYSTEM
+            : actorUserId === userId
+              ? TransitionHistorySource.USER
+              : TransitionHistorySource.HR;
+
+        const transition =
+          oldPositionId != null
+            ? await prisma.transition.findFirst({
+                where: {
+                  fromPositionId: oldPositionId,
+                  toPositionId: newPositionId,
+                },
+                select: { id: true, type: true },
+              })
+            : null;
+
+        const transitionTypeSnapshot =
+          transition?.type != null
+            ? (transition.type as 'VERTICAL' | 'HORIZONTAL' | 'CHANGE')
+            : ('UNKNOWN' as const);
+
+        await prisma.userTransitionHistory.create({
+          data: {
+            userId,
+            fromPositionId: oldPositionId,
+            toPositionId: newPositionId,
+            source,
+            actorUserId: actorUserId ?? null,
+            transitionId: transition?.id ?? null,
+            transitionType:
+              transition != null
+                ? transitionTypeSnapshot
+                : ('UNKNOWN' as const),
+          } as Parameters<
+            typeof prisma.userTransitionHistory.create
+          >[0]['data'],
+        });
+      }
+    }
+
+    return updated;
   }
 
   async getUserSkills(userId: string) {

@@ -12,7 +12,7 @@ export class CareerPathsController {
 
   @Get()
   @ApiOperation({ summary: 'Get career graph' })
-  async getCareerGraph(@Request() req) {
+  async getCareerGraph(@Request() req: { user?: { id?: string } }) {
     return this.careerPathsService.getCareerGraph(req.user?.id);
   }
 
@@ -20,7 +20,7 @@ export class CareerPathsController {
   @ApiOperation({ summary: 'Get career paths from specific position' })
   async getCareerPathsFromPosition(
     @Param('positionId') positionId: string,
-    @Request() req,
+    @Request() req: { user?: { id?: string } },
   ) {
     return this.careerPathsService.getCareerPathsFromPosition(
       positionId,

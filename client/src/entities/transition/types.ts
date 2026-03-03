@@ -3,6 +3,11 @@ import type { Skill } from '@entities/skill/types';
 
 export type TransitionType = 'VERTICAL' | 'HORIZONTAL' | 'CHANGE';
 
+export interface TransitionSkillWithLevel extends Skill {
+  userLevel: number;
+  requiredLevel?: number;
+}
+
 export interface Transition {
   id: string;
   type: TransitionType;
@@ -13,7 +18,10 @@ export interface Transition {
   requiredSkills?: Skill[];
   isRecommended?: boolean;
   isPartiallyAvailable?: boolean;
-  missingSkills?: string[];
+  readinessPercent?: number;
+  missingSkills?: Skill[];
+  partialSkills?: TransitionSkillWithLevel[];
+  okSkills?: TransitionSkillWithLevel[];
 }
 
 export interface CreateTransitionDto {

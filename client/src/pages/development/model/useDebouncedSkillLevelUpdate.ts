@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import { userApi } from '@entities/user/api/userApi';
 import type { DevelopmentProfile } from '@entities/development/types';
 
@@ -6,7 +7,7 @@ const SAVED_LABEL_RESET_MS = 2000;
 
 interface UseDebouncedSkillLevelUpdateParams {
   profile: DevelopmentProfile | null;
-  setProfile: (fn: (prev: DevelopmentProfile) => DevelopmentProfile) => void;
+  setProfile: Dispatch<SetStateAction<DevelopmentProfile | null>>;
   loadProfile: () => Promise<void>;
   debounceMs?: number;
 }

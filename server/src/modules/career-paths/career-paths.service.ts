@@ -1,8 +1,77 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import prisma from '../../config/prisma';
+import { SKILL_SUFFICIENT_LEVEL } from '../../config/development.constants';
+import type { SkillInfo } from '../../common/types/skill.types';
+
+interface TransitionReadinessResult {
+  readinessPercent: number;
+  missingSkills: SkillInfo[];
+  partialSkills: Array<
+    SkillInfo & { userLevel: number; requiredLevel: number }
+  >;
+  okSkills: Array<SkillInfo & { userLevel: number }>;
+}
 
 @Injectable()
 export class CareerPathsService {
+  private computeTransitionReadiness(
+    requiredSkills: Array<{
+      id: string;
+      name: string;
+      category: string | null;
+    }>,
+    userLevelBySkill: Map<string, number>,
+  ): TransitionReadinessResult {
+    const missingSkills: SkillInfo[] = [];
+    const partialSkills: Array<
+      SkillInfo & { userLevel: number; requiredLevel: number }
+    > = [];
+    const okSkills: Array<SkillInfo & { userLevel: number }> = [];
+
+    const N = requiredSkills.length;
+    if (N === 0) {
+      return {
+        readinessPercent: 100,
+        missingSkills: [],
+        partialSkills: [],
+        okSkills: [],
+      };
+    }
+
+    let sumScores = 0;
+    for (const skill of requiredSkills) {
+      const userLevel = userLevelBySkill.get(skill.id);
+      const skillInfo: SkillInfo = {
+        id: skill.id,
+        name: skill.name,
+        category: skill.category,
+      };
+      if (userLevel === undefined) {
+        missingSkills.push(skillInfo);
+        sumScores += 0;
+      } else if (userLevel < SKILL_SUFFICIENT_LEVEL) {
+        partialSkills.push({
+          ...skillInfo,
+          userLevel,
+          requiredLevel: SKILL_SUFFICIENT_LEVEL,
+        });
+        sumScores +=
+          Math.min(userLevel, SKILL_SUFFICIENT_LEVEL) / SKILL_SUFFICIENT_LEVEL;
+      } else {
+        okSkills.push({ ...skillInfo, userLevel });
+        sumScores += 1;
+      }
+    }
+
+    const readinessPercent = Math.round((sumScores / N) * 100);
+    return {
+      readinessPercent,
+      missingSkills,
+      partialSkills,
+      okSkills,
+    };
+  }
+
   async getCareerGraph(userId?: string) {
     const positions = await prisma.position.findMany({
       orderBy: [{ level: 'asc' }, { title: 'asc' }],
@@ -16,13 +85,15 @@ export class CareerPathsService {
       },
     });
 
-    let userSkills: string[] = [];
+    let userLevelBySkill = new Map<string, number>();
     if (userId) {
       const userSkillsData = await prisma.userSkill.findMany({
         where: { userId },
-        select: { skillId: true },
+        select: { skillId: true, level: true },
       });
-      userSkills = userSkillsData.map((us) => us.skillId);
+      userLevelBySkill = new Map(
+        userSkillsData.map((us) => [us.skillId, us.level]),
+      );
     }
 
     return {
@@ -33,29 +104,35 @@ export class CareerPathsService {
         department: position.department,
       })),
       transitions: transitions.map((transition) => {
+        const requiredSkillsList = transition.requiredSkills.map((skill) => ({
+          id: skill.id,
+          name: skill.name,
+          category: skill.category,
+        }));
+        const readiness = this.computeTransitionReadiness(
+          requiredSkillsList,
+          userLevelBySkill,
+        );
         const requiredSkillIds = transition.requiredSkills.map((s) => s.id);
         const hasAllSkills =
           requiredSkillIds.length === 0 ||
-          requiredSkillIds.every((skillId) => userSkills.includes(skillId));
+          requiredSkillIds.every((skillId) => userLevelBySkill.has(skillId));
         const hasSomeSkills =
           requiredSkillIds.length > 0 &&
-          requiredSkillIds.some((skillId) => userSkills.includes(skillId));
+          requiredSkillIds.some((skillId) => userLevelBySkill.has(skillId));
 
         return {
           id: transition.id,
           type: transition.type,
           fromPositionId: transition.fromPositionId,
           toPositionId: transition.toPositionId,
-          requiredSkills: transition.requiredSkills.map((skill) => ({
-            id: skill.id,
-            name: skill.name,
-            category: skill.category,
-          })),
+          requiredSkills: requiredSkillsList,
           isRecommended: hasAllSkills,
           isPartiallyAvailable: hasSomeSkills && !hasAllSkills,
-          missingSkills: requiredSkillIds.filter(
-            (skillId) => !userSkills.includes(skillId),
-          ),
+          readinessPercent: readiness.readinessPercent,
+          missingSkills: readiness.missingSkills,
+          partialSkills: readiness.partialSkills,
+          okSkills: readiness.okSkills,
         };
       }),
     };
@@ -70,13 +147,15 @@ export class CareerPathsService {
       throw new NotFoundException('Position not found');
     }
 
-    let userSkills: string[] = [];
+    let userLevelBySkill = new Map<string, number>();
     if (userId) {
       const userSkillsData = await prisma.userSkill.findMany({
         where: { userId },
-        select: { skillId: true },
+        select: { skillId: true, level: true },
       });
-      userSkills = userSkillsData.map((us) => us.skillId);
+      userLevelBySkill = new Map(
+        userSkillsData.map((us) => [us.skillId, us.level]),
+      );
     }
 
     const transitions = await prisma.transition.findMany({
@@ -128,33 +207,41 @@ export class CareerPathsService {
         department: position.department,
       },
       directTransitions: transitions.map((transition) => {
+        const requiredSkillsList = transition.requiredSkills.map((skill) => ({
+          id: skill.id,
+          name: skill.name,
+          category: skill.category,
+        }));
+        const readiness = this.computeTransitionReadiness(
+          requiredSkillsList,
+          userLevelBySkill,
+        );
         const requiredSkillIds = transition.requiredSkills.map((s) => s.id);
         const hasAllSkills =
           requiredSkillIds.length === 0 ||
-          requiredSkillIds.every((skillId) => userSkills.includes(skillId));
+          requiredSkillIds.every((skillId) => userLevelBySkill.has(skillId));
         const hasSomeSkills =
           requiredSkillIds.length > 0 &&
-          requiredSkillIds.some((skillId) => userSkills.includes(skillId));
+          requiredSkillIds.some((skillId) => userLevelBySkill.has(skillId));
 
         return {
           id: transition.id,
           type: transition.type,
+          fromPositionId: transition.fromPositionId,
+          toPositionId: transition.toPositionId,
           toPosition: {
             id: transition.toPosition.id,
             title: transition.toPosition.title,
             level: transition.toPosition.level,
             department: transition.toPosition.department,
           },
-          requiredSkills: transition.requiredSkills.map((skill) => ({
-            id: skill.id,
-            name: skill.name,
-            category: skill.category,
-          })),
+          requiredSkills: requiredSkillsList,
           isRecommended: hasAllSkills,
           isPartiallyAvailable: hasSomeSkills && !hasAllSkills,
-          missingSkills: requiredSkillIds.filter(
-            (skillId) => !userSkills.includes(skillId),
-          ),
+          readinessPercent: readiness.readinessPercent,
+          missingSkills: readiness.missingSkills,
+          partialSkills: readiness.partialSkills,
+          okSkills: readiness.okSkills,
         };
       }),
       reachablePositions: allReachablePositions.map((pos) => ({

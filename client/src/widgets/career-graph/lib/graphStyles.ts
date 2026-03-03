@@ -1,5 +1,9 @@
 import type { TransitionType, Transition } from '@entities/transition/types';
 
+export interface ScenarioThemeForGraph {
+  highlightColor: string;
+}
+
 export const getEdgeColor = (
   type: TransitionType,
   isRecommended?: boolean,
@@ -24,20 +28,40 @@ export const getEdgeColor = (
   }
 };
 
-export const getEdgeStyle = (transition: Transition) => {
-  const baseColor = getEdgeColor(
-    transition.type,
-    transition.isRecommended,
-    transition.isPartiallyAvailable,
-  );
+export interface GetEdgeStyleOptions {
+  scenarioTheme?: ScenarioThemeForGraph;
+  recommendedWeight?: number;
+}
+
+export const getEdgeStyle = (
+  transition: Transition,
+  options?: GetEdgeStyleOptions,
+) => {
+  const { scenarioTheme, recommendedWeight } = options ?? {};
+  const useScenarioHighlight =
+    scenarioTheme && recommendedWeight !== undefined && recommendedWeight > 0;
+
+  const baseColor = useScenarioHighlight
+    ? scenarioTheme.highlightColor
+    : getEdgeColor(
+        transition.type,
+        transition.isRecommended,
+        transition.isPartiallyAvailable,
+      );
+
+  const baseWidth = transition.isRecommended
+    ? 3
+    : transition.isPartiallyAvailable
+      ? 2.5
+      : 2;
+  const width = useScenarioHighlight
+    ? Math.min(4, baseWidth + 0.5 * Math.min(2, recommendedWeight))
+    : baseWidth;
 
   return {
     stroke: baseColor,
-    strokeWidth: transition.isRecommended
-      ? 3
-      : transition.isPartiallyAvailable
-        ? 2.5
-        : 2,
+    strokeWidth: width,
     strokeDasharray: transition.isPartiallyAvailable ? '5,5' : undefined,
+    opacity: useScenarioHighlight ? 0.6 + 0.4 * Math.min(1, recommendedWeight) : 1,
   };
 };

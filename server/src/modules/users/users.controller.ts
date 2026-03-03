@@ -30,14 +30,14 @@ export class UsersController {
 
   @Get('profile')
   @ApiOperation({ summary: 'Get current user profile' })
-  async getProfile(@Request() req) {
+  async getProfile(@Request() req: { user: { id: string } }) {
     return this.usersService.getProfile(req.user.id);
   }
 
   @Put('profile')
   @ApiOperation({ summary: 'Update current user profile' })
   async updateProfile(
-    @Request() req,
+    @Request() req: { user: { id: string } },
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
     return this.usersService.updateProfile(req.user.id, updateProfileDto);
@@ -50,13 +50,18 @@ export class UsersController {
   async updateUserPosition(
     @Param('id') id: string,
     @Body() updatePositionDto: UpdatePositionDto,
+    @Request() req: { user?: { id: string } },
   ) {
-    return this.usersService.updateUserPosition(id, updatePositionDto);
+    return this.usersService.updateUserPosition(
+      id,
+      updatePositionDto,
+      req.user?.id,
+    );
   }
 
   @Get('profile/skills')
   @ApiOperation({ summary: 'Get current user skills with levels' })
-  async getUserSkills(@Request() req) {
+  async getUserSkills(@Request() req: { user: { id: string } }) {
     return this.usersService.getUserSkills(req.user.id);
   }
 
@@ -65,20 +70,26 @@ export class UsersController {
     summary:
       'Replace current user skills (atomic). Duplicate skillId returns 400.',
   })
-  async putSkills(@Request() req, @Body() putSkillsDto: PutSkillsDto) {
+  async putSkills(
+    @Request() req: { user: { id: string } },
+    @Body() putSkillsDto: PutSkillsDto,
+  ) {
     return this.usersService.putSkills(req.user.id, putSkillsDto);
   }
 
   @Post('profile/skills')
   @ApiOperation({ summary: 'Add one skill for current user' })
-  async addSkill(@Request() req, @Body() addSkillDto: AddSkillDto) {
+  async addSkill(
+    @Request() req: { user: { id: string } },
+    @Body() addSkillDto: AddSkillDto,
+  ) {
     return this.usersService.addSkill(req.user.id, addSkillDto);
   }
 
   @Patch('profile/skills/:skillId')
   @ApiOperation({ summary: 'Update skill level for current user' })
   async updateSkillLevel(
-    @Request() req,
+    @Request() req: { user: { id: string } },
     @Param('skillId') skillId: string,
     @Body() patchSkillLevelDto: PatchSkillLevelDto,
   ) {
@@ -91,7 +102,10 @@ export class UsersController {
 
   @Delete('profile/skills/:skillId')
   @ApiOperation({ summary: 'Remove skill for current user' })
-  async deleteSkill(@Request() req, @Param('skillId') skillId: string) {
+  async deleteSkill(
+    @Request() req: { user: { id: string } },
+    @Param('skillId') skillId: string,
+  ) {
     return this.usersService.deleteSkill(req.user.id, skillId);
   }
 }

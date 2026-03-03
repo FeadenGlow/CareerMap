@@ -22,10 +22,22 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['reactflow'],
-          'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (
+              id.includes('react') ||
+              id.includes('react-dom') ||
+              id.includes('react-router')
+            )
+              return 'react-vendor';
+            if (id.includes('reactflow')) return 'ui-vendor';
+            if (
+              id.includes('react-hook-form') ||
+              id.includes('@hookform') ||
+              id.includes('zod')
+            )
+              return 'form-vendor';
+          }
         },
       },
     },
